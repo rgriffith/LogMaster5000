@@ -1,0 +1,11 @@
+<h3>Create a Log</h3>
+
+<%= form_for @log do |f| %>
+	<div class="control-group">
+		<label class="control-label" for="logfile">File</label>
+		<div class="controls">
+			<%= f.file_field :logfile %>
+  		</div>
+  	</div>
+  <button id="submit-btn" class="btn btn-primary">Upload</button>
+<% end %>

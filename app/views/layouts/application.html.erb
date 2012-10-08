@@ -2,13 +2,28 @@
 <html>
 <head>
   <title>Logmaster5000</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= stylesheet_link_tag    "application", :media => "all" %>  
+  <%= stylesheet_link_tag    "/javascripts/datatables/css/jquery.dataTables.css", :media => "all" %>  
+
   <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "/javascripts/datatables/js/jquery.dataTables.min.js" %>
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<%= yield %>
-
-</body>
+	<div class="navbar navbar-fixed-top navbar-inverse">
+	  <div class="navbar-inner">
+	  	<div class="container-fluid">
+	    	<a class="brand" href="/">LogMaster5000.2</a>
+	    	<ul class="nav">
+	      		<li><a href="/">Home</a></li>
+	      	</ul>
+		</div>
+	  </div>
+	</div>
+	<div class="container-fluid">
+		<% if flash[:notice] %>
+			<%= render :partial => "layouts/flashmessage", :locals => { :flash => flash } %>
+		<% end %>
+		<%= yield %>
+	</div>
 </html>

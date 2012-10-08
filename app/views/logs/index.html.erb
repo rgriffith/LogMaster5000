@@ -1,1 +1,35 @@
-hi
+<div class="row">
+	<div class="span8">
+		<h3>Available Logs</h3>
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>File</th>
+					<th>Size</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% if @logs.size < 1 %>
+				<tr>
+					<td colspan="3">There are currently no log files to list. Feel free to upload one.</td>
+				</tr>
+			<% else %>
+				<% @logs.each do |log| %>
+					<tr>
+						<td><%= link_to log.logfile, log_path(log) %></td>
+						<td><%= number_to_human_size(File.stat(log.logfile.current_path).size) %></td>
+						<td><%= link_to raw('<i class="icon-trash"></i>'), log, :method => 'delete', :confirm => 'Are you sure you want to delete this log? This cannot be undone.' %>
+						</td>
+					</tr>
+				<% end %>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+	<div class="span4">
+		<div class="well" style="margin-top:30px">
+			<%= render 'form' %>
+		</div>
+	</div>
+</div>
