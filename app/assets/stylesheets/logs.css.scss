@@ -1,3 +1,15 @@
-// Place all the styles related to the Logs controller here.
+// Place all the styles related to the log controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+.timestamp-badge {
+	padding: 5px 10px 8px;
+	line-height: 37px;
+}
+
+@media (min-width:980px){
+	body {
+		padding: 60px 0;
+	}
+}
