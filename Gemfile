@@ -29,7 +29,12 @@ group :test, :development do
 	gem 'guard-rspec'
 	gem 'growl'
 	gem 'rb-fsevent', '~> 0.9.1'
+	gem 'launchy'
 end
+
+gem 'carrierwave'
+gem 'em-synchrony'
+gem 'parallel'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
