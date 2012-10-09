@@ -24,56 +24,59 @@ describe "Logs" do
 	describe "GET /logs" do
 		it "display some logs" do
 			visit logs_path
+			
 			page.should have_content 'cascade.log'
 		end
 
 		it "creates a new log" do
 			visit logs_path
-			fill_in 'Logfile', :with => 'cascade-create.log'
-			click_button 'Create Log'
+
+			attach_file 'log[logfile]', Rails.root.to_s + '/tmp/cascade.log'
+			click_button 'Upload'
 
 			current_path.should == logs_path
-			page.should have_content 'cascade-create.log'
+
+			page.should have_content 'Success!'
 
 			#save_and_open_page
 		end
 	end
 
 	describe "PUT /logs" do
+
 		it "edits a log" do
 			visit logs_path
-			click_link 'Edit'
+
+			click_link 'Edit log'
 
 			current_path.should == edit_log_path(@log)
 
-			#save_and_open_page
-
-			find_field('Logfile').value.should == 'cascade.log'
-
-			fill_in 'Logfile', :with => 'cascade-updated.log'
-			click_button 'Update Log'
+			attach_file 'log[logfile]', Rails.root.to_s + '/tmp/cascade.log'
+			click_button 'Upload'
 
 			current_path.should == logs_path
 
-			page.should have_content 'cascade-updated.log'
+			page.should have_content 'Success!'
 		end
 
-		it "should not uupdate an empty log" do
+		it "should not update an empty log" do
 			visit logs_path
-			click_link 'Edit'
 
-			fill_in 'Logfile', :with => ''
-			click_button 'Update Log'
+			click_link 'Edit'
+			click_button 'Upload'
 
 			current_path.should == edit_log_path(@log)
-			page.should have_content 'There was an error updating log.'
+
+			page.should have_content 'Oops!'
 		end
 	end
 
 	describe "DELETE /logs" do
 		it "should delete a log" do
 			visit logs_path
-			find("#log_#{@log.id}").click_link 'Delete'
+
+			find("#log_#{@log.id}").click_link 'Delete log'
+
 			page.should have_content 'Log has been deleted.'
 			page.should have_no_content 'cascade.log'
 		end
