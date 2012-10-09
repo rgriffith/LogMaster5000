@@ -1,15 +1,10 @@
-<h2>Parsed File</h2>
-
-<dl class="dl-horizontal">
-	<dt>File</dt>
-	<dd><%= @log.logfile %></dd>
-	<dt>Size</dt>
-	<dd><%= number_to_human_size(File.size(@log.logfile.current_path)) %></dd>
-	<dt>Lines</dt>
-	<dd><%= number_with_delimiter(@line_total) %></dd>
-	<dt>Entries Found</dt>
-	<dd><%= number_with_delimiter(@entry_count) %></dt>
-</dl>
+<div class="page-header">	
+  	<div class="btn-group pull-right span3">
+  		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
+  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
+  	</div>
+  	<h1>Log Details <small><%= @log.logfile %></small></h1> 	
+</div>
 
 <div id="output">
 	<div class="control-group">
@@ -51,6 +46,26 @@
 	<div class="modal-footer">
 		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 	</div>
+</div>
+
+<div id="log-popover-content" class="hide">
+	<dl class="dl-horizontal left-align">
+		<dt>Size</dt>
+		<dd><%= number_to_human_size(File.size(@log.logfile.current_path)) %></dd>
+		<dt>Lines</dt>
+		<dd><%= number_with_delimiter(@line_total) %></dd>
+		<dt>Entries Found</dt>
+		<dd><%= number_with_delimiter(@entry_count) %></dt>
+	</dl>
+</div>
+<div id="cache-popover-content" class="hide">
+	<dl class="dl-horizontal left-align">
+		<dt>Cache File Size</dt>
+		<dd><%= number_to_human_size(File.size(@log.logfile.current_path + ".cache")) %></dd>
+		<dt>Last Updated</dt>
+		<dd><%=distance_of_time_in_words(File.mtime(@log.logfile.current_path + ".cache"), Time.now)%> ago</dd>
+	</dl>
+	<%= link_to raw('<i class="icon-white icon-refresh"></i> Refresh Cache'), log_path(@log, :clear_cache => true), :class => "btn btn-block btn-primary" %>
 </div>
 
 <script>
@@ -147,7 +162,8 @@ $(document).ready(function(){
 	}
 
 	var messageModal = $("#messageModal").modal({show:false}),
-		activeLog = null;
+		activeLog = null,
+		activePopover = null;
 
 	LogMaster.entriesTable = $('#entries');
 	LogMaster.entriesTable.dataTable({
@@ -173,6 +189,40 @@ $(document).ready(function(){
 	// Remove clicking from the popovers
 	$("a[rel=popover]").live("click", function(e) {
 		e.preventDefault()
+	});
+
+	// Create popovers on the fly and toggle them.
+	$('a[id$="popover-toggler"]').click(function(e){	
+		e.preventDefault();
+
+		var element = $(this),
+			elementId = element.attr('id'),
+			elementTitle = element.attr('title'),
+			popoverTitle = elementTitle + '<a class="close" href="#" rel="' + elementId + '" style="line-height:15px">&times;</a>',
+			popoverContent = $('#' + elementId.replace('toggler', 'content')).html();
+
+		// Toggle selected popover.	
+		element.popover({
+			title: popoverTitle,
+			content: popoverContent,
+			placement: 'bottom',
+			trigger: 'manual'
+		}).popover('toggle');	
+
+		// Clear open popover.
+		// Only necessary if the current differs from active.
+		if (activePopover !== null && elementId !== activePopover.attr('id')) {
+			activePopover.popover('hide');
+		}
+		
+		// Update the active popover.
+		activePopover = element;
+	});
+
+	// Add click event to close icon within popover title.
+	$('.popover-title a.close').live('click', function(e){
+		e.preventDefault();
+		$('#'+$(this).attr('rel')).popover('hide');
 	});
 });
 
