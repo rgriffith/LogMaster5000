@@ -7,7 +7,7 @@ class LogsController < ApplicationController
 	def create
 		if params[:log]
 			log = Log.new
-			log.logfile = params[:log][:logfile]
+			log.logfile = params[:log][:logfile]			
 			log.save!
 			redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been created successfully.'}
 		else
@@ -55,12 +55,16 @@ class LogsController < ApplicationController
 	end
 
 	def update
-		log = Log.find params[:id]
+		if params[:log]
+			log = Log.find params[:id]
 
-		if log.update_attributes params[:log]
-			redirect_to logs_path, :notice => {:type=> 'success', :message=>'Log has been updated successfully.'}
+			if log.update_attributes params[:log]
+				redirect_to logs_path, :notice => {:type=> 'success', :message=>'Log has been updated successfully.'}
+			else
+				redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.'}
+			end
 		else
-			redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.'}
+			redirect_to :back, :notice => {:type=> 'error', :message=>'Please specify a log to upload.'}
 		end
 	end
 
