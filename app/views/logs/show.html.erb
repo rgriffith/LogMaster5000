@@ -182,6 +182,12 @@ $(document).ready(function(){
 
 	$('td.trace-toggle:has(a)', $('#entries')).live('click', function () {
     	$('.modal-body', messageModal).html($('div', $(this)).html());
+
+    	// Hide any active popovers.
+    	if (activePopover !== null) {
+			activePopover.popover('hide');
+		}
+
 		messageModal.modal('show');
 		return false;   
     });
