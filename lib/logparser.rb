@@ -40,10 +40,10 @@ module LogParser
 				thread_lib = @@defaults[:thread_lib]
 			end
 
-			if opts[:use_cache]
-				use_cache = opts[:use_cache]
+			if opts[:clear_cache].nil? == false && opts[:clear_cache]
+				clear_cache = true
 			else
-				use_cache = @@defaults[:use_cache]
+				clear_cache = false
 			end
 
 			@entries = {}
@@ -55,8 +55,8 @@ module LogParser
 				return { :line_total => -1, :entries => [] }
 			end
 
-			# Check for a valid cache file			
-			if use_cache && cache_exists?(cache_file)
+			# Check for a valid cache file unless overwrite is supplied.		
+			if clear_cache == false && cache_exists?(cache_file)
 				return get_cache(cache_file) unless nil
 			end
 

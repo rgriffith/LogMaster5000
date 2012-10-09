@@ -19,7 +19,15 @@ class LogsController < ApplicationController
 		require 'logparser'
 		@log = Log.find params[:id]
 
-		@entries = LogParser.fiber_aware_parse(@log.logfile.current_path)
+		parser_opts = {}
+		if params[:clear_cache] == "true"
+			parser_opts = {
+				:clear_cache => true
+			}
+			flash.now[:notice] = {:type => "success", :message => "Cache updated successfully."}
+		end
+
+		@entries = LogParser.fiber_aware_parse(@log.logfile.current_path, parser_opts)
 
 		@line_total = @entries[:line_total]
 		@entry_count = @entries[:entries].size
@@ -36,7 +44,7 @@ class LogsController < ApplicationController
 
 		respond_to do |format|
 			format.html {
-				@output = @output.to_json
+				@output = @output.to_json				
 			}
 			format.json { render :json => @output }
 	    end
