@@ -72,4 +72,10 @@ class LogsController < ApplicationController
 		Log.destroy params[:id]
 		redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been deleted.'}
 	end
+
+	def download
+		require 'mime/types'
+		@log = Log.find params[:id]
+		send_file @log.logfile.current_path, :type => MIME::Types.type_for(@log.logfile.current_path), :filename => File.basename(@log.logfile.current_path)
+	end
 end

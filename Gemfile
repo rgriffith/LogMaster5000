@@ -35,6 +35,7 @@ end
 gem 'carrierwave'
 gem 'em-synchrony'
 gem 'parallel'
+gem 'mime-types'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

@@ -1,7 +1,7 @@
 <div class="page-header">	
   	<div class="btn-group pull-right span3">
   		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
-  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
+  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>  		
   	</div>
   	<h1>Log Details <small><%= @log.logfile %></small></h1> 	
 </div>
@@ -57,6 +57,7 @@
 		<dt>Entries Found</dt>
 		<dd><%= number_with_delimiter(@entry_count) %></dt>
 	</dl>
+	<%= link_to raw('<i class="icon-white icon-download"></i> Download Log'), download_log_path(@log), :title => 'download log', :class => "btn btn-block btn-primary" %>
 </div>
 <div id="cache-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">

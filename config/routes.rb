@@ -1,7 +1,11 @@
 Logmaster5000::Application.routes.draw do
   root :to => 'Logs#index'
-  
-  resources :logs
+
+  resources :logs do
+    member do
+      get :download
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
