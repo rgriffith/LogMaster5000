@@ -1,9 +1,12 @@
 class CreateLogs < ActiveRecord::Migration
-  def change
-    create_table :logs do |t|
-      t.string :logfile
+	def up
+		create_table :logs do |t|
+			t.string :logfile
+			t.timestamps
+		end
+	end
 
-      t.timestamps
-    end
-  end
+	def down
+		drop_table :logs
+	end
 end

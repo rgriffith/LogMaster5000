@@ -1,0 +1,9 @@
+<%= form_for @label do |f| %>
+	<div class="control-group">
+		<%= f.label :name, :class => "control-label" %>
+		<div class="controls">
+			<%= f.text_field :name %>
+  		</div>
+  	</div>
+  <button id="submit-btn" class="btn btn-primary">Save</button>
+<% end %>

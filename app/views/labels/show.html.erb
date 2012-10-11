@@ -1,0 +1,8 @@
+<div class="page-header">	
+	<div class="btn-group pull-right span3">
+		<%= link_to raw('<i class="icon-pencil"></i> edit label'), edit_label_path(@label), :class => "btn btn-small" %>
+  	</div>
+  	<h1>Label Details <small><%= @label.name %></small></h1> 	
+</div>
+
+<%= render 'logs/loglisting' %>

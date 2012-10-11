@@ -4,6 +4,24 @@
 		<div class="controls">
 			<%= f.file_field :logfile %>
   		</div>
+  		<label class="control-label" for="labels">Labels</label>
+  		<div class="controls">
+  			<input type="text" name="labels" id="labels" style="width:300px !important;" />
+  		</div>
   	</div>
   <button id="submit-btn" class="btn btn-primary">Upload</button>
 <% end %>
+
+<script>
+	$('#labels').textext({
+            plugins : 'autocomplete tags ajax',
+            ajax : {
+                url : '<%= get_names_labels_path :format => "json" %>',
+                dataType : 'json',
+                cacheResults : true
+            }
+            <% if @log.labels.size > 0 %>
+            , tagsItems: <%= @log.labels.map(&:name).to_json.html_safe %>
+            <% end %>
+        });
+</script>

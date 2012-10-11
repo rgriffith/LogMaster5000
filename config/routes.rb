@@ -1,6 +1,12 @@
 Logmaster5000::Application.routes.draw do
   root :to => 'Logs#index'
 
+  resources :labels do
+    collection do
+      get :get_names
+    end
+  end
+
   resources :logs do
     member do
       get :download

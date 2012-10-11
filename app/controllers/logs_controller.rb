@@ -9,6 +9,14 @@ class LogsController < ApplicationController
 			log = Log.new
 			log.logfile = params[:log][:logfile]			
 			log.save!
+
+			log_labels = eval(params[:labels])
+			if log_labels
+				log_labels.each do |label|
+					log.labels << Label.find_or_create_by_name(label)
+				end
+			end
+			
 			redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been created successfully.'}
 		else
 			redirect_to :back, :notice => {:type=> 'error', :message=>'Please choose a log file for upload.'}
@@ -55,17 +63,24 @@ class LogsController < ApplicationController
 	end
 
 	def update
-		if params[:log]
-			log = Log.find params[:id]
+		log = Log.find params[:id]
+		log_labels = eval(params[:labels])
 
-			if log.update_attributes params[:log]
-				redirect_to logs_path, :notice => {:type=> 'success', :message=>'Log has been updated successfully.'}
-			else
+		# Update log's labels.
+		log.labels.clear
+		if log_labels
+			log_labels.each do |label|
+				log.labels << Label.find_or_create_by_name(label)
+			end
+		end
+
+		if params[:log]
+			if !log.update_attributes params[:log]
 				redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.'}
 			end
-		else
-			redirect_to :back, :notice => {:type=> 'error', :message=>'Please specify a log to upload.'}
 		end
+
+		redirect_to logs_path, :notice => {:type=> 'success', :message=>'Log has been updated successfully.'}
 	end
 
 	def destroy
