@@ -33,6 +33,8 @@ group :test, :development do
 	gem 'launchy'
 end
 
+gem 'thin'
+
 gem 'carrierwave'
 gem 'em-synchrony'
 gem 'parallel'
