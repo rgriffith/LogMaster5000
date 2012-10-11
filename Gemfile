@@ -40,6 +40,8 @@ gem 'em-synchrony'
 gem 'parallel'
 gem 'mime-types'
 gem 'stringex'
+gem 'omniauth'
+gem 'omniauth-github'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
