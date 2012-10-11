@@ -1,4 +1,6 @@
 class LogsController < ApplicationController
+	before_filter :authenticate_user!
+
 	def index
 		@log = Log.new
 		@logs = Log.all

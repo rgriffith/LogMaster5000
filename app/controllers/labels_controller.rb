@@ -1,4 +1,6 @@
 class LabelsController < ApplicationController
+	before_filter :authenticate_user!
+
 	def index
 		@label = Label.new
 		@labels = Label.all
