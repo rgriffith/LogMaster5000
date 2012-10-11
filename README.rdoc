@@ -1,1 +1,18 @@
-Utility to parse log files for entries and stack traces. Generates a pretty table listing each entry that was found.
+= Description
+Utility to parse Cascade Server log files for entries and stack traces. Generates a pretty table listing each entry that was found.
+
+= Technologies Used:
+
+== Gems:
+* http://rubygems.org/gems/carrierwave
+* http://rubygems.org/gems/em-synchrony
+* http://rubygems.org/gems/parallel
+* http://rubygems.org/gems/mime-types
+* http://rubygems.org/gems/stringex
+
+== jQuery Plugins
+* http://textextjs.com/
+* http://www.datatables.net/
+
+== UI
+* http://twitter.github.com/bootstrap
