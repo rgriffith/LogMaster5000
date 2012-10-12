@@ -16,5 +16,5 @@
 /tmp
 
 # Additional files
-/public/uploads
+/public/uploads/**/*
 /.powenv
