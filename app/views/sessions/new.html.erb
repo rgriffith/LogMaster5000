@@ -1,0 +1,13 @@
+<div class="row" style="margin-top:50px">
+	<div class="span3 offset6 well">
+		<%= form_tag("/sessions/new", :method => "post") do |f| %>
+			<div class="control-group">
+				<label for="username" class="control-label">Username<label>
+				<div class="controls">
+					<input type="text" id="username" name="username" value="" class="span3" />
+		  		</div>
+		  	</div>
+		  	<button type="submit" class="btn btn-primary">Login</button>
+		<% end %>
+	</div>
+</div>

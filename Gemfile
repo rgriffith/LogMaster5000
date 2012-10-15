@@ -42,6 +42,8 @@ gem 'mime-types'
 gem 'stringex'
 gem 'omniauth'
 gem 'omniauth-github'
+gem 'curb'
+gem 'yajl-ruby'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

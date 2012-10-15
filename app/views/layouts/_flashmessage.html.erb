@@ -8,7 +8,7 @@
                         %><h4>Success!</h4><%
             end
             %>
-      	<%= flash[:notice][:message] %>
+      	<%= raw(flash[:notice][:message]) %>
       </div>
 <% else %>
       <div class="alert alert-block">      			
