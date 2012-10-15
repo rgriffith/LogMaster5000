@@ -42,6 +42,6 @@ class SessionsController < ApplicationController
 			User.delete session[:user_id]
 			reset_session
 		end
-		redirect_to login_path, :notice => {:type => 'success', :message => 'You have been logged out successfully. Don\'t forget to revoke access to this application through the <a href="https://github.com/settings/applications">Github Applications</a> page.'}
+		redirect_to login_path, :notice => {:type => 'success', :message => 'You have been logged out successfully. Don\'t forget to revoke access to this application through the <a href="https://github.com/settings/applications">Github Applications</a> page if you would like access to be removed completely.'}
 	end
 end
