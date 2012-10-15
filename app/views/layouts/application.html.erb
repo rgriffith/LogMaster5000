@@ -21,7 +21,7 @@
 			<ul class="nav pull-right">
 			<% if session[:user_id] %>
 				<% user = User.find session[:user_id] %> 
-				<li style="padding:10px 15px 10px;">Welcome, <%= user.email %></li>
+				<li style="padding:10px 15px 10px;">Welcome, <%= user.nickname %></li>
 				<li class="divider-vertical"></li>
 				<li><a href="<%= logout_path %>">Logout</a></li>
 			<% else %>
