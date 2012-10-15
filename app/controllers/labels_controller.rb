@@ -11,6 +11,10 @@ class LabelsController < ApplicationController
 	    end
 	end
 
+	def new
+		@label = Label.new
+	end
+
 	def get_names
 		@labels = Label.all
 

@@ -1,22 +1,30 @@
+<div class="page-header">	
+  	<div class="btn-group pull-right span3">
+  		<a href="<%= new_label_path %>" class="btn btn-primary btn-small" title="Add new label">add new label</a>  		
+  	</div>
+  	<h1>Available Labels</h1> 
+</div>	
+
 <div class="row">
-	<div class="span7">
-		<h3>Labels</h3>
+	<div class="span12">
 		<table class="table table-striped table-hover">
 			<thead>
 				<tr>
 					<th>Name</th>
+					<th width="80"># of Logs</th>
 					<th>Actions</th>
 				</tr>
 			</thead>
 			<tbody>
 			<% if @labels.size < 1 %>
 				<tr>
-					<td colspan="2">There are currently no labels files to list. Feel free to create one.</td>
+					<td colspan="2">There are currently no labels files to list. Feel free to <a href="<%= new_label_path %>">create one</a>.</td>
 				</tr>
 			<% else %>
 				<% @labels.each do |label| %>
 					<tr id="label_<%= label.id %>">
 						<td><%= link_to label.name, label_path(label) %></td>
+						<td><%= label.logs.size %></td>
 						<td>
 							<%= link_to raw('<i class="icon-pencil"></i>'), edit_label_path(label), :title => 'Edit label' %>
 							<%= link_to raw('<i class="icon-trash"></i>'), label, :method => 'delete', :confirm => 'Are you sure you want to delete this label? This cannot be undone.', :title => 'Delete label' %>
@@ -26,11 +34,5 @@
 			<% end %>
 			</tbody>
 		</table>
-	</div>
-	<div class="span4">
-		<div class="well" style="margin-top:30px">
-			<h3>Create a Label</h3>
-			<%= render 'form' %>
-		</div>
 	</div>
 </div>

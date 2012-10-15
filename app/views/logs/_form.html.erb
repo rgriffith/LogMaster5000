@@ -1,27 +1,30 @@
 <%= form_for @log do |f| %>
-	<div class="control-group">
-		<%= f.label :logfile, 'File', :class => "control-label" %>
-		<div class="controls">
-			<%= f.file_field :logfile %>
-  		</div>
-  		<label class="control-label" for="labels">Labels</label>
-  		<div class="controls">
-  			<input type="text" name="labels" id="labels" style="width:250px !important;" autocomplete="off" />
-  		</div>
-  	</div>
-  <button id="submit-btn" class="btn btn-primary">Upload</button>
+    <div class="control-group">
+        <%= f.label :logfile, 'Log File', :class => "control-label" %>
+        <div class="controls">
+            <%= f.file_field :logfile %>
+        </div>  		
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="labels">Labels</label>
+        <div class="controls">
+            <input type="text" name="labels" id="labels" style="width:350px !important;" autocomplete="off" />
+        </div>
+    </div>
+    <br />
+    <button id="submit-btn" class="btn btn-primary">Upload</button>
 <% end %>
 
 <script>
-	$('#labels').textext({
-            plugins : 'autocomplete tags ajax',
-            ajax : {
-                url : '<%= get_names_labels_path :format => "json" %>',
-                dataType : 'json',
-                cacheResults : true
-            }
-            <% if @log.labels.size > 0 %>
-            , tagsItems: <%= @log.labels.map(&:name).to_json.html_safe %>
-            <% end %>
-        });
+    $('#labels').textext({
+        plugins : 'autocomplete tags ajax',
+        ajax : {
+            url : '<%= get_names_labels_path :format => "json" %>',
+            dataType : 'json',
+            cacheResults : true
+        }
+        <% if @log.labels.size > 0 %>
+        , tagsItems: <%= @log.labels.map(&:name).to_json.html_safe %>
+        <% end %>
+    });
 </script>

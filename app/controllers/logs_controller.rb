@@ -6,6 +6,10 @@ class LogsController < ApplicationController
 		@logs = Log.all
 	end
 
+	def new
+		@log = Log.new
+	end
+
 	def create
 		if params[:log]
 			log = Log.new

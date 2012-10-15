@@ -1,4 +1,3 @@
-<h3>Available Logs</h3>
 <table class="table table-striped table-hover">
 	<thead>
 		<tr>
@@ -10,20 +9,14 @@
 	<tbody>
 	<% if @logs.size < 1 %>
 		<tr>
-			<td colspan="3">There are currently no log files to list. Feel free to upload one.</td>
+			<td colspan="3">There are currently no log files to list. Feel free to <a href="<%= new_log_path %>">upload one</a>.</td>
 		</tr>
 	<% else %>
 		<% @logs.each do |log| %>
 			<tr id="log_<%= log.id %>">
 				<td>
 					<%= link_to log.logfile, log_path(log) %>
-				<% if log.labels.size > 0 %>
-					<% labels = log.labels %>
-					<br /><i class="icon-tags"></i>&nbsp;
-					<% labels.each do |label| %>
-						<a href="<%= label_path(label) %>" class="label"><%= label.name %></a>
-					<% end %>
-				<% end %>
+					<br /><%= render :partial => 'logs/loglabels', :locals => { :labels => log.labels } %>
 				</td>
 				<td><%= number_to_human_size(File.stat(log.logfile.current_path).size) %></td>
 				<td>

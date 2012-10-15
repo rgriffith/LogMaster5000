@@ -1,0 +1,6 @@
+<% if labels.size > 0 %>
+	<i class="icon-tags"></i>&nbsp;
+	<% labels.each do |label| %>
+		<a href="<%= label_path(label) %>" class="label"><%= label.name %></a>
+	<% end %>
+<% end %>

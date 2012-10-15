@@ -2,8 +2,10 @@
   	<div class="btn-group pull-right span3">
   		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
   		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>  		
+  		<a href="<%= edit_log_path(@log) %>" class="btn btn-small" title="Edit log"><i class="icon-pencil"></i> edit log</a> 
   	</div>
   	<h1>Log Details <small><%= @log.logfile %></small></h1> 	
+  	<%= render :partial => 'logs/loglabels', :locals => { :labels => @log.labels } %>
 </div>
 
 <div id="output">
