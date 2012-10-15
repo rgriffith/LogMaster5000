@@ -1,5 +1,5 @@
 = Description
-Utility to parse Cascade Server log files for entries and stack traces. Generates a pretty table listing each entry that was found.
+Utility to parse Cascade Server log files for entries and stack traces. Generates a pretty table listing each entry that was found. User authenticatation via Github API and omniauth.
 
 = Technologies Used
 
@@ -9,6 +9,10 @@ Utility to parse Cascade Server log files for entries and stack traces. Generate
 * http://rubygems.org/gems/parallel
 * http://rubygems.org/gems/mime-types
 * http://rubygems.org/gems/stringex
+* https://github.com/intridea/omniauths
+* https://github.com/intridea/omniauth-github
+* https://github.com/taf2/curb
+* https://github.com/brianmario/yajl-ruby
 
 === jQuery Plugins
 * http://textextjs.com
