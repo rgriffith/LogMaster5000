@@ -8,22 +8,34 @@ class LogsController < ApplicationController
 
 	def new
 		@log = Log.new
+
+		respond_to do |format|
+			format.html
+			format.js { render :layout => false }
+	    end
 	end
 
-	def create
+	def create		
 		if params[:log]
+			warnings = []
+
 			log = Log.new
 			log.logfile = params[:log][:logfile]			
 			log.save!
 
-			log_labels = eval(params[:labels])
-			if log_labels
+			if params[:hiddenTagList]
+				log_labels = params[:hiddenTagList].split(',')
 				log_labels.each do |label|
-					log.labels << Label.find_or_create_by_name(label)
+					new_label = Label.find_or_create_by_name(label)
+					if new_label.errors.any?
+						warnings.push(new_label.errors.full_messages)
+					else
+						log.labels << new_label
+					end
 				end
 			end
 			
-			redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been created successfully.'}
+			redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been created successfully.', :issues => { :type => "warning", :messages => warnings.flatten} }
 		else
 			redirect_to :back, :notice => {:type=> 'error', :message=>'Please choose a log file for upload.'}
 		end		
@@ -66,27 +78,43 @@ class LogsController < ApplicationController
 
 	def edit
 		@log = Log.find params[:id]
+
+		respond_to do |format|
+			format.html
+			format.js { render :layout => false }
+	    end
 	end
 
 	def update
-		log = Log.find params[:id]
-		log_labels = eval(params[:labels])
+		log = Log.find params[:id]		
+		success = true
+		warnings = []
 
 		# Update log's labels.
 		log.labels.clear
-		if log_labels
+		if params[:hiddenTagList]
+			log_labels = params[:hiddenTagList].split(',')
 			log_labels.each do |label|
-				log.labels << Label.find_or_create_by_name(label)
+				new_label = Label.find_or_create_by_name(label)
+				if new_label.errors.any?
+					warnings.push new_label.errors.full_messages
+				else
+					log.labels << new_label
+				end
 			end
 		end
 
-		if params[:log]
+		if params[:log]			
 			if !log.update_attributes params[:log]
-				redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.'}
+				success = false
 			end
 		end
 
-		redirect_to logs_path, :notice => {:type=> 'success', :message=>'Log has been updated successfully.'}
+		if success			
+			redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been updated successfully.', :issues => { :type => "warning", :messages => warnings.flatten} }
+		else
+			redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.', :issues => { :type => "warning", :messages => warnings.flatten} }
+		end	
 	end
 
 	def destroy

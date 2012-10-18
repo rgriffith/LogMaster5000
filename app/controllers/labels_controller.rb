@@ -13,13 +13,18 @@ class LabelsController < ApplicationController
 
 	def new
 		@label = Label.new
+
+		respond_to do |format|
+			format.html
+			format.js { render :layout => false }
+	    end
 	end
 
 	def get_names
 		@labels = Label.all
 
 		respond_to do |format|
-			format.json { render :json => @labels.map(&:name) }
+			format.json { render :json => { :tags => @labels.collect{|label| {:tag => label.name}} } }
 	    end
 	end
 
@@ -35,7 +40,12 @@ class LabelsController < ApplicationController
 	def create
 		if params[:label]
 			label = Label.create params[:label]
-			redirect_to :back, :notice => {:type=> 'success', :message=>'Label has been created successfully.'}
+
+			if label.errors.any?
+				redirect_to :back, :notice => {:type=> 'error', :message=>'There was a problem creating your new label.', :issues => { :type => "error", :messages => label.errors.full_messages } }
+		    else
+				redirect_to labels_path, :notice => {:type=> 'success', :message=>'Label has been created successfully.'}
+			end
 		else
 			redirect_to :back, :notice => {:type=> 'error', :message=>'There was a problem creating your new label.'}
 		end		
@@ -43,15 +53,24 @@ class LabelsController < ApplicationController
 
 	def edit
 		@label = Label.find_by_url params[:id]
+
+		respond_to do |format|
+			format.html
+			format.js { render :layout => false }
+	    end
 	end
 
 	def update
 		label = Label.find_by_url params[:id]
 
-		if label.update_attributes params[:label]
-			redirect_to labels_path, :notice => {:type=> 'success', :message=>'Label has been updated successfully.'}
+		if label.update_attributes params[:label]			
+			redirect_to :back, :notice => {:type=> 'success', :message=>'Label has been updated successfully.'}
 		else
-			redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating label.'}
+			if label.errors.any?
+				redirect_to :back, :notice => {:type=> 'error', :message=>'There was a problem updating your label.', :issues => { :type => "error", :messages => label.errors.full_messages } }
+		    else
+				redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating label.'}
+			end			
 		end
 	end
 

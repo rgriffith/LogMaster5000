@@ -1,30 +1,28 @@
-<%= form_for @log do |f| %>
-    <div class="control-group">
-        <%= f.label :logfile, 'Log File', :class => "control-label" %>
-        <div class="controls">
-            <%= f.file_field :logfile %>
-        </div>  		
+<%= form_for @log, :html => { :style => "margin-bottom:0px" } do |f| %>    
+    <div class="modal-header">
+        <% if @log.id %>            
+            <h3>Update Log <small><%= @log.logfile.url %></h3>
+        <% else %>
+            <h3>Add Log</h3>
+        <% end %>        
     </div>
-    <div class="control-group">
-        <label class="control-label" for="labels">Labels</label>
-        <div class="controls">
-            <input type="text" name="labels" id="labels" style="width:350px !important;" autocomplete="off" />
+    <div class="modal-body">
+        <div class="control-group">
+            <%= f.label :logfile, 'Log File', :class => "control-label" %>
+            <div class="controls">
+                <%= f.file_field :logfile %>
+            </div>          
+        </div>  
+        <div class="control-group">
+            <label class="control-label" for="labels">Labels</label>
+            <div class="controls">
+                <input type="text" name="labels" id="labels" placeholder="Add tag..." class="span2" autocomplete="off" />
+                <div class="hide"><%= @log.labels.map(&:name).join(',') %></div>
+            </div>
         </div>
     </div>
-    <br />
-    <button id="submit-btn" class="btn btn-primary">Upload</button>
+    <div class="modal-footer">
+        <button id="submit-btn" class="btn btn-primary pull-left">Save</button>
+        <a href="<%= logs_path %>" class="btn pull-left" data-dismiss="modal">Cancel</a>
+    </div>
 <% end %>
-
-<script>
-    $('#labels').textext({
-        plugins : 'autocomplete tags ajax',
-        ajax : {
-            url : '<%= get_names_labels_path :format => "json" %>',
-            dataType : 'json',
-            cacheResults : true
-        }
-        <% if @log.labels.size > 0 %>
-        , tagsItems: <%= @log.labels.map(&:name).to_json.html_safe %>
-        <% end %>
-    });
-</script>

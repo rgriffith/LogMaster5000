@@ -1,0 +1,8 @@
+var inlineLabelFormModal = $('<div class="modal hide" id="inlineLabelFormModal"></div>');
+inlineLabelFormModal.html("<%= escape_javascript(render 'form') %>");
+
+$(".modal-header", inlineLabelFormModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
+
+inlineLabelFormModal.modal('show');
+
+$('#label_name', inlineLabelFormModal).focus();

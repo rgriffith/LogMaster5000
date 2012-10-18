@@ -1,0 +1,13 @@
+var inlineLogFormModal = $('<div class="modal hide" id="inlineLogFormModal"></div>');
+inlineLogFormModal.html("<%= escape_javascript(render :partial => 'logs/form', :locals => { :inline => true }) %>");
+
+$(".modal-header", inlineLogFormModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
+
+inlineLogFormModal.modal('show');
+
+$("#labels", inlineLogFormModal).tagsManager({
+    prefilled: <%= @log.labels.map(&:name).to_json.html_safe %>,
+    hiddenTagListName: "hiddenTagList",
+    typeahead: true,
+    typeaheadAjaxSource: '<%= get_names_labels_path :format => "json" %>'
+});

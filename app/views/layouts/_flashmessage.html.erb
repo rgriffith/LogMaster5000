@@ -1,14 +1,23 @@
 <% if flash[:notice].is_a?(Hash) %>
-      <div class="alert alert-block alert-<%=flash[:notice][:type]%>">
-            <button type="button" class="close" data-dismiss="alert">×</button><%
+    <div class="alert alert-block alert-<%=flash[:notice][:type]%>">
+        <button type="button" class="close" data-dismiss="alert">×</button><%
             case flash[:notice][:type]
-                  when "error"
-                        %><h4>Oops!</h4><%
-                  when "success"
-                        %><h4>Success!</h4><%
+                when "error"
+                    %><h4>Oops!</h4><%
+                when "success"
+                    %><h4>Success!</h4><%
             end
-            %>
-      	<%= raw(flash[:notice][:message]) %>
+        %>
+      	<p><%= raw(flash[:notice][:message]) %></p>
+        <% if flash[:notice][:issues] && flash[:notice][:issues][:messages].count > 0 %>
+            <p><%= pluralize(flash[:notice][:issues][:messages].count, flash[:notice][:issues][:type]) %> encountered:</p>
+
+            <ul>
+            <% flash[:notice][:issues][:messages].each do |msg| %>
+                <li><%= raw(msg) %></li>
+            <% end %>
+            </ul>
+        <% end %>
       </div>
 <% else %>
       <div class="alert alert-block">      			

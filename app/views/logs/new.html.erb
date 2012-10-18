@@ -1,4 +1,8 @@
-<div class="page-header">	
-  	<h1>Add New Log</h1> 	
-</div>
 <%= render 'form' %>
+<script>
+    $("#labels").tagsManager({
+        hiddenTagListName: "hiddenTagList",
+        typeahead: true,
+        typeaheadAjaxSource: '<%= get_names_labels_path :format => "json" %>'
+    });
+</script>

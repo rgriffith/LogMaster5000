@@ -1,8 +1,8 @@
 <div class="page-header">	
   	<div class="btn-group pull-right span3">
   		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
-  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>  		
-  		<a href="<%= edit_log_path(@log) %>" class="btn btn-small" title="Edit log"><i class="icon-pencil"></i> edit log</a> 
+  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
+  		<%= link_to raw('<i class="icon-pencil"></i> edit log'), edit_log_path(@log), :remote => true, :title => 'Edit log', :class => "modal-toggler btn btn-small" %>
   	</div>
   	<h1>Log Details <small><%= @log.logfile %></small></h1> 	
   	<%= render :partial => 'logs/loglabels', :locals => { :labels => @log.labels } %>
@@ -49,7 +49,6 @@
 		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 	</div>
 </div>
-
 <div id="log-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">
 		<dt>Size</dt>

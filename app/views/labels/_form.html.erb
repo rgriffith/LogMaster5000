@@ -1,10 +1,21 @@
-<%= form_for @label do |f| %>
-	<div class="control-group">
-		<%= f.label :name, :class => "control-label" %>
-		<div class="controls">
-			<%= f.text_field :name %>
-  		</div>
-  	</div>
-  	<br />
-  	<button id="submit-btn" class="btn btn-primary">Save</button>
+<%= form_for @label, :html => { :style => "margin-bottom:0px" } do |f| %>    
+    <div class="modal-header">
+        <% if @label.id %>            
+            <h3>Update Label <small><%= @label.name %></h3>
+        <% else %>
+            <h3>Add Label</h3>
+        <% end %>        
+    </div>
+    <div class="modal-body">
+        <div class="control-group">
+            <%= f.label :name, :class => "control-label" %>
+            <div class="controls">
+                <%= f.text_field :name %>
+            </div>          
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="submit-btn" class="btn btn-primary pull-left">Save</button>
+        <a href="<%= labels_path %>" class="btn pull-left" data-dismiss="modal">Cancel</a>
+    </div>
 <% end %>

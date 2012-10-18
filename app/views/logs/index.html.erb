@@ -1,6 +1,6 @@
 <div class="page-header">	
   	<div class="btn-group pull-right span3">
-  		<a href="<%= new_log_path %>" class="btn btn-primary btn-small" title="Add new log">add new log</a>  		
+  		<%= link_to 'add new log', new_log_path, :remote => true, :title => 'Add new log', :class => "log-modal-toggler btn btn-primary btn-small" %>
   	</div>
   	<h1>Available Logs</h1> 
 </div>	

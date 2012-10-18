@@ -1,6 +1,6 @@
 <div class="page-header">	
   	<div class="btn-group pull-right span3">
-  		<a href="<%= new_label_path %>" class="btn btn-primary btn-small" title="Add new label">add new label</a>  		
+  		<%= link_to 'add new label', new_label_path, :remote => true, :title => 'Add new label', :class => "label-modal-toggler btn btn-primary btn-small" %>
   	</div>
   	<h1>Available Labels</h1> 
 </div>	
@@ -18,7 +18,7 @@
 			<tbody>
 			<% if @labels.size < 1 %>
 				<tr>
-					<td colspan="2">There are currently no labels files to list. Feel free to <a href="<%= new_label_path %>">create one</a>.</td>
+					<td colspan="2">There are currently no labels files to list. Feel free to <%= link_to 'create one', new_label_path, :remote => true, :title => 'Add new label' %>.</td>
 				</tr>
 			<% else %>
 				<% @labels.each do |label| %>
@@ -26,7 +26,7 @@
 						<td><%= link_to label.name, label_path(label) %></td>
 						<td><%= label.logs.size %></td>
 						<td>
-							<%= link_to raw('<i class="icon-pencil"></i>'), edit_label_path(label), :title => 'Edit label' %>
+							<%= link_to raw('<i class="icon-pencil"></i>'), edit_label_path(label), :remote => true, :title => 'Edit label', :class => "label-modal-toggler" %>
 							<%= link_to raw('<i class="icon-trash"></i>'), label, :method => 'delete', :confirm => 'Are you sure you want to delete this label? This cannot be undone.', :title => 'Delete label' %>
 						</td>
 					</tr>
