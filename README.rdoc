@@ -15,7 +15,7 @@ Utility to parse Cascade Server log files for entries and stack traces. Generate
 * https://github.com/brianmario/yajl-ruby
 
 === jQuery Plugins
-* http://textextjs.com
+* https://github.com/max-favilli/tagmanager
 * http://www.datatables.net
 
 === UI
