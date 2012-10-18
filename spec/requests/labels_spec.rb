@@ -2,19 +2,26 @@ require 'spec_helper'
 
 describe "Labels" do
 
-	before do
-		@label = Label.create :name => 'Default label' 
+	before do		
+		@label = Label.create :name => 'Default label'
+
+		# Simulate user login...
+		visit root_path
+		fill_in 'Username', :with => ENV['GITHUB_APIUSER']
+		click_button 'Login'
 	end
 
 	describe "GET /labels" do
-		it "display some labels" do
+		it "display some labels" do	
 			visit labels_path
-			
+
 			page.should have_content 'Default label'
 		end
+	end
 
+	describe "GET /labels/new" do	
 		it "creates a new label" do
-			visit labels_path
+			visit new_label_path
 
 			fill_in 'Name', :with => 'New Label'
 			click_button 'Save'
@@ -23,30 +30,35 @@ describe "Labels" do
 
 			page.should have_content 'Success!'
 		end
+
+		it "should not create a new label with reserved name" do
+			visit new_label_path
+
+			fill_in 'Name', :with => 'new'
+			click_button 'Save'
+
+			current_path.should == new_label_path
+
+			page.should have_content 'Oops!'
+		end
 	end
 
 	describe "PUT /labels" do
-		it "edits a label" do
-			visit labels_path
+		it "should not update a label with an empty name" do
+			visit edit_label_path @label
 
-			click_link 'Edit label'
+			fill_in 'Name', :with => ''
+			click_button 'Save'
 
 			current_path.should == edit_label_path(@label)
 
-			fill_in 'Name', :with => 'Updated label'
-			click_button 'Save'
-
-			current_path.should == labels_path
-
-			page.should have_content 'Success!'
+			page.should have_content 'Oops!'
 		end
 
-		it "should not update an empty label" do
-			visit labels_path
+		it "should not update a label with a reserved name" do
+			visit edit_label_path @label
 
-			click_link 'Edit'
-
-			fill_in 'Name', :with => ''
+			fill_in 'Name', :with => 'new'
 			click_button 'Save'
 
 			current_path.should == edit_label_path(@label)
