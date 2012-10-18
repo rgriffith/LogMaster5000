@@ -1,6 +1,10 @@
 = Description
 Utility to parse Cascade Server log files for entries and stack traces. Generates a pretty table listing each entry that was found. User authenticatation via Github API and omniauth.
 
+=== Features
+* Github authentication
+* Log labels
+
 = Technologies Used
 
 === Gems
