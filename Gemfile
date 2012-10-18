@@ -28,7 +28,6 @@ group :test, :development do
 	gem 'rspec-rails'
 	gem 'capybara'
 	gem 'guard-rspec'
-	gem 'growl'
 	gem 'rb-fsevent', '~> 0.9.1'
 	gem 'launchy'
 end
