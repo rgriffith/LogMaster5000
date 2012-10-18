@@ -18,7 +18,7 @@
 			<tbody>
 			<% if @labels.size < 1 %>
 				<tr>
-					<td colspan="2">There are currently no labels files to list. Feel free to <%= link_to 'create one', new_label_path, :remote => true, :title => 'Add new label' %>.</td>
+					<td colspan="3">There are currently no labels files to list. Feel free to <%= link_to 'create one', new_label_path, :remote => true, :title => 'Add new label' %>.</td>
 				</tr>
 			<% else %>
 				<% @labels.each do |label| %>
