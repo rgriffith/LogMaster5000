@@ -5,6 +5,7 @@ Utility to parse Cascade Server log files for entries and stack traces. Generate
 
 === Gems
 * http://rubygems.org/gems/carrierwave
+* https://github.com/luan/carrierwave-ftp
 * http://rubygems.org/gems/em-synchrony
 * http://rubygems.org/gems/parallel
 * http://rubygems.org/gems/mime-types

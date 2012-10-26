@@ -27,7 +27,7 @@ module LogParser
 	@entries = {}
 
 	class << self
-		def fiber_aware_parse(file_path, opts = {})
+		def parse_log(lines, opts={})
 			if opts[:threads]
 				threads = opts[:threads]
 			else
@@ -40,31 +40,11 @@ module LogParser
 				thread_lib = @@defaults[:thread_lib]
 			end
 
-			if opts[:clear_cache].nil? == false && opts[:clear_cache]
-				clear_cache = true
-			else
-				clear_cache = false
-			end
-
 			@entries = {}
 			points = [0]
-			cache_file = file_path + ".cache"
-
-			# Make sure we have a file.
-			if (File.size?(file_path) == nil)
-				return { :line_total => -1, :entries => [] }
-			end
-
-			# Check for a valid cache file unless overwrite is supplied.		
-			if clear_cache == false && cache_exists?(cache_file)
-				return get_cache(cache_file) unless nil
-			end
 
 			# Grab the lines in the file.
-			File.open(file_path, 'r') do |f|
-				@lines = f.readlines.to_a
-				f.close()
-			end
+			@lines = lines
 
 			# Make sure we have some data to parse.
 			if (@lines.size < 1) || (@lines.size == 1 && @lines[0].strip.empty?)
@@ -73,19 +53,22 @@ module LogParser
 
 			# Break the lines into an array of chunks to iterate over to find
 			# points where entries are found.
-			chunk_size = (@lines.size / threads).ceil	
+			chunk_size = (@lines.size / threads).ceil
 
-			for i in 1..threads
-				starting_line = i * chunk_size
+			if chunk_size > threads
 
-				# Check to see if we land on an entry.
-				# Else, parse through in chunks until we find one.				
-				if @lines[starting_line] =~ @@entry_regex[:log][:entry]
-					points.push(starting_line)
-				else
-					entry_line = find_entry_line(starting_line)
-					if entry_line != nil
-						points.push(entry_line)
+				for i in 1..threads
+					starting_line = i * chunk_size
+
+					# Check to see if we land on an entry.
+					# Else, parse through in chunks until we find one.				
+					if @lines[starting_line] =~ @@entry_regex[:log][:entry]
+						points.push(starting_line)
+					else
+						entry_line = find_entry_line(starting_line)
+						if entry_line != nil
+							points.push(entry_line)
+						end
 					end
 				end
 			end
@@ -127,9 +110,6 @@ module LogParser
 			end
 
 			return_hash = { :line_total => @lines.size, :entries => @entries.values }
-
-			# Save to cache
-			save_to_cache(cache_file, return_hash)
 
 			return return_hash
 		end
@@ -238,31 +218,6 @@ module LogParser
 					end
 				end
 			end
-		end
-
-		def cache_exists?(file_path)
-			return File.exists?(file_path)
-		end
-
-		def get_cache(file_path)
-			if cache_exists?(file_path)
-				File.open(file_path, "rb") { |f| 
-					return Marshal.load(f) 
-				}
-			else
-				return nil
-			end
-		end
-
-		def save_to_cache(file_path, entries)
-			cache_dirname = File.dirname(file_path)
-			if File.exists?(cache_dirname) == false
-				FileUtils.mkdir(cache_dirname)
-			end
-
-			File.open(file_path, "wb") { |f| 
-				Marshal.dump(entries, f)
-			}
 		end
 	end
 end
