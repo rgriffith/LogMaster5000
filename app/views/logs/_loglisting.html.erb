@@ -1,26 +1,32 @@
 <table class="table table-striped table-hover">
 	<thead>
 		<tr>
+			<th width="2%">ID</th>
 			<th>File</th>
-			<th>Size</th>
-			<th>Log Actions</th>
+			<th width="18%">Size</th>
+			<th width="20%">Log Actions</th>
 		</tr>
 	</thead>
 	<tbody>
 	<% if @logs.size < 1 %>
 		<tr>
-			<td colspan="3">There are currently no log files to list. Feel free to <%= link_to 'upload one', new_log_path, :remote => true %>.</td>
+<<<<<<< Updated upstream
+			<td colspan="3">There are currently no log files to list. Feel free to <a href="<%= new_log_path %>">upload one</a>.</td>
+=======
+			<td colspan="4">There are currently no log files to list. Feel free to <%= link_to 'upload one', new_log_path, :remote => true %>.</td>
+>>>>>>> Stashed changes
 		</tr>
 	<% else %>
 		<% @logs.each do |log| %>
 			<tr id="log_<%= log.id %>">
+				<td><%= log.id %></td>
 				<td>
-					<%= link_to log.logfile, log_path(log) %>
+					<%= link_to log.logfile.file.filename, log_path(log) %>
 					<br /><%= render :partial => 'logs/loglabels', :locals => { :labels => log.labels } %>
 				</td>
-				<td><%= number_to_human_size(File.stat(log.logfile.current_path).size) %></td>
+				<td><%= number_to_human_size(log.logfile.size) %></td>
 				<td>
-					<%= link_to raw('<i class="icon-pencil"></i>'), edit_log_path(log), :remote => true, :title => 'Edit log', :class => "log-modal-toggler" %>
+					<%= link_to raw('<i class="icon-pencil"></i>'), edit_log_path(log), :title => 'Edit log' %>
 					<%= link_to raw('<i class="icon-trash"></i>'), log, :method => 'delete', :confirm => 'Are you sure you want to delete this log? This cannot be undone.', :title => 'Delete log' %>
 				</td>
 			</tr>

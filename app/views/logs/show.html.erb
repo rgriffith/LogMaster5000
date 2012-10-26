@@ -4,7 +4,7 @@
   		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
   		<%= link_to raw('<i class="icon-pencil"></i> edit log'), edit_log_path(@log), :remote => true, :title => 'Edit log', :class => "modal-toggler btn btn-small" %>
   	</div>
-  	<h1>Log Details <small><%= @log.logfile %></small></h1> 	
+  	<h1>Log Details <small><%= @log.logfile.file.filename %></small></h1> 	
   	<%= render :partial => 'logs/loglabels', :locals => { :labels => @log.labels } %>
 </div>
 
@@ -52,22 +52,22 @@
 <div id="log-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">
 		<dt>Size</dt>
-		<dd><%= number_to_human_size(File.size(@log.logfile.current_path)) %></dd>
+		<dd><%= number_to_human_size(@log.logfile.size) %></dd>
 		<dt>Lines</dt>
-		<dd><%= number_with_delimiter(@line_total) %></dd>
+		<dd><%= number_with_delimiter(@entries[:json_hash]["line_total"]) %></dd>
 		<dt>Entries Found</dt>
-		<dd><%= number_with_delimiter(@entry_count) %></dt>
+		<dd><%= number_with_delimiter(@entries[:json_hash]["entries"].size) %></dt>
+		<dt>Last Updated</dt>
+		<dd><%=distance_of_time_in_words(Time.at(@log.updated_at), Time.now)%> ago</dd>
 	</dl>
 	<%= link_to raw('<i class="icon-white icon-download"></i> Download Log'), download_log_path(@log), :title => 'download log', :class => "btn btn-block btn-primary" %>
 </div>
 <div id="cache-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">
 		<dt>Cache File Size</dt>
-		<dd><%= number_to_human_size(File.size(@log.logfile.current_path + ".cache")) %></dd>
-		<dt>Last Updated</dt>
-		<dd><%=distance_of_time_in_words(File.mtime(@log.logfile.current_path + ".cache"), Time.now)%> ago</dd>
+		<dd><%= number_to_human_size(@log.entriesjson.size) %></dd>
 	</dl>
-	<%= link_to raw('<i class="icon-white icon-refresh"></i> Refresh Cache'), log_path(@log, :clear_cache => true), :class => "btn btn-block btn-primary" %>
+	<%= link_to raw('<i class="icon-white icon-eye-open"></i> View Cache'), log_path(@log, :format => "json"), :class => "btn btn-block btn-primary" %>
 </div>
 
 <script>
@@ -89,7 +89,7 @@ var LogMaster = {
 		self.entriesTable.dataTable({
 			bDestroy: true,
 			bAutoWidth: false,
-			aaData: data.aaData,
+			aaData: data,
 			aaSorting: [],
 			aoColumns: [
 		        { mData: "level" },
@@ -172,9 +172,7 @@ $(document).ready(function(){
 		bSort: false
 	});
 
-	LogMaster.log = {
-		entries: <%= @output.html_safe %>
-	};
+	LogMaster.log = <%= @entries[:data].force_encoding("UTF-8").html_safe %>;
 
 	LogMaster.populateDataTable(LogMaster.log.entries);
 
@@ -205,8 +203,7 @@ $(document).ready(function(){
 
 		var element = $(this),
 			elementId = element.attr('id'),
-			elementTitle = element.attr('title'),
-			popoverTitle = elementTitle + '<a class="close" href="#" rel="' + elementId + '" style="line-height:15px">&times;</a>',
+			popoverTitle = element.attr('title'),
 			popoverContent = $('#' + elementId.replace('toggler', 'content')).html();
 
 		// Toggle selected popover.	
@@ -215,7 +212,7 @@ $(document).ready(function(){
 			content: popoverContent,
 			placement: 'bottom',
 			trigger: 'manual'
-		}).popover('toggle');	
+		}).popover('toggle');
 
 		// Clear open popover.
 		// Only necessary if the current differs from active.
@@ -225,12 +222,6 @@ $(document).ready(function(){
 		
 		// Update the active popover.
 		activePopover = element;
-	});
-
-	// Add click event to close icon within popover title.
-	$('.popover-title a.close').live('click', function(e){
-		e.preventDefault();
-		$('#'+$(this).attr('rel')).popover('hide');
 	});
 });
 

@@ -35,6 +35,7 @@ end
 gem 'thin'
 
 gem 'carrierwave'
+gem 'carrierwave-ftp', :require => 'carrierwave/storage/ftp/all'
 gem 'em-synchrony'
 gem 'parallel'
 gem 'mime-types'
@@ -43,6 +44,7 @@ gem 'omniauth'
 gem 'omniauth-github'
 gem 'curb'
 gem 'yajl-ruby'
+gem 'whenever'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
