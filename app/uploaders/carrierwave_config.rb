@@ -1,5 +1,7 @@
 #app/uploaders/carrierwave_config.rb
 CarrierWave.configure do |config|
+  config.cache_dir = "uploads"
+  config.root = Rails.root.join('tmp')
   case ENV['CW_STORAGE'] 
     when "sftp"
       config.storage = :sftp
