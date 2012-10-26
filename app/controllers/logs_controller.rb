@@ -70,16 +70,11 @@ class LogsController < ApplicationController
 		end
 
 		if params[:log]
-<<<<<<< Updated upstream
-			if !log.update_attributes params[:log]
-				redirect_to :back, :notice => {:type=> 'error', :message=>'There was an error updating log.'}
-=======
 			log.logfile = params[:log][:logfile]
 			log.entriesjson = params[:log][:logfile]
 
 			if !log.save!
 				success = false
->>>>>>> Stashed changes
 			end
 		end
 

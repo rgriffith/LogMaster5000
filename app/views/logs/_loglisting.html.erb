@@ -10,11 +10,7 @@
 	<tbody>
 	<% if @logs.size < 1 %>
 		<tr>
-<<<<<<< Updated upstream
-			<td colspan="3">There are currently no log files to list. Feel free to <a href="<%= new_log_path %>">upload one</a>.</td>
-=======
 			<td colspan="4">There are currently no log files to list. Feel free to <%= link_to 'upload one', new_log_path, :remote => true %>.</td>
->>>>>>> Stashed changes
 		</tr>
 	<% else %>
 		<% @logs.each do |log| %>
