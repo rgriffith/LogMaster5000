@@ -24,3 +24,7 @@
 every 10.minutes, :at => 1 do
 	rake "scanuploads:add_dropped_logs"
 end
+
+every 1.day, :at => '12:00 am' do
+	rake "scanuploads:remove_orphaned_log_folders"
+end

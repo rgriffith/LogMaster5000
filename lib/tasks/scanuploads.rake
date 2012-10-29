@@ -1,6 +1,4 @@
-
 #lib/tasks/scanuploads.rake
-require 'rake'
 
 namespace :scanuploads do
 
@@ -15,10 +13,9 @@ namespace :scanuploads do
 		return log.errors.empty?
 	end
 
+	desc "Scan a 'drop' folder for Log objects to generate"
 	task :add_dropped_logs => :environment do
 		storage = ENV['CW_STORAGE']
-
-		puts "Using storage type: " + storage
 
 		case storage
 			when "sftp"
@@ -63,6 +60,51 @@ namespace :scanuploads do
 
 					if create_log_from_file(File.open(drop_file_path))
 						File.delete(drop_file_path)
+					end
+				end
+		end
+	end
+
+	desc "Scan the Log uploads folder for orphaned(empty) folders"
+	task :removed_orphaned_log_folders => :environment do
+		storage = ENV['CW_STORAGE']
+		uploads_dir = ENV['CW_UPLOADS_ROOT']+"/uploads/log"
+
+		puts "Using storage type: " + storage
+
+		case storage
+			when "sftp"
+				require 'net/sftp'
+				Net::SFTP.start(LogfileUploader.sftp_host, LogfileUploader.sftp_user, LogfileUploader.sftp_options) do |sftp|					
+					sftp.dir.foreach(uploads_dir) do |entry|
+						next if entry.name.start_with?(".")
+						
+						dir_path = uploads_dir+"/"+entry
+						if sft.dir.entries(dir_path).size <= 2
+							sftp.rmdir!(dir_path)
+						end						
+					end
+				end
+			when "ftp"
+				require 'net/ftp'
+				Net::FTP.open(LogfileUploader.ftp_host, LogfileUploader.ftp_user, LogfileUploader.ftp_passwd, LogfileUploader.ftp_port) do |ftp|
+					ftp.dir.foreach(uploads_dir) do |entry|
+						next if entry.start_with?(".")
+						
+						dir_path = uploads_dir+"/"+entry
+						if ftp.list(dir_path).size <= 2
+							ftp.rmdir(dir_path)
+						end
+					end
+				end
+			else
+				require 'fileutils'
+				Dir.foreach(uploads_dir) do |entry|
+					next if entry.start_with?(".")
+
+					dir_path = uploads_dir+"/"+entry
+					if Dir.entries(dir_path).size <= 2
+						FileUtils.rm_rf(dir_path)
 					end
 				end
 		end
