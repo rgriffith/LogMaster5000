@@ -11,9 +11,7 @@ module LogParser
 =end
 	@@defaults = {
 		:threads => 40,
-		:thread_lib => "em_synchrony",
-		:cache_dir => Rails.root.join('public','logs','cache'),
-		:use_cache => true
+		:thread_lib => "em_synchrony"
 	}
 
 	@@entry_regex = {
@@ -35,7 +33,7 @@ module LogParser
 			end
 
 			if opts[:thread_lib]
-				thread_lib = opts[:threads]
+				thread_lib = opts[:thread_lib]
 			else
 				thread_lib = @@defaults[:thread_lib]
 			end

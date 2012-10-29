@@ -9,7 +9,7 @@ class EntriesJsonUploader < CarrierWave::Uploader::Base
     require 'logparser'
     f = File.open(path, 'r')
     lines = f.readlines
-    json = LogParser.parse_log(lines).to_json
+    json = LogParser.parse_log(lines,{:thread_lib=>"parallel"}).to_json
     f.reopen(path, "w")
     f.write json.force_encoding("UTF-8")
     f.close()
