@@ -15,6 +15,7 @@
 /log/*.log
 !/tmp/
 /tmp/**/*
+/tmp/restart.txt
 !/tmp/uploads/*
 /tmp/uploads/**/*
 
