@@ -68,7 +68,7 @@ namespace :scanuploads do
 	desc "Scan the Log uploads folder for orphaned(empty) folders"
 	task :removed_orphaned_log_folders => :environment do
 		storage = ENV['CW_STORAGE']
-		uploads_dir = ENV['CW_UPLOADS_ROOT']+"/uploads/log"
+		uploads_dir = ENV['CW_UPLOADS_ROOT']+"/log"
 
 		puts "Using storage type: " + storage
 
