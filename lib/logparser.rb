@@ -62,6 +62,8 @@ module LogParser
 			threads = (@lines_size / max_chunk_size).ceil
 			if (threads > max_threads)
 				threads = max_threads
+			elsif (threads < 1)
+				threads = 1
 			end
 
 			# Break the lines into an array of chunks to iterate over to find
