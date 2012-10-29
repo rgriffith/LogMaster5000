@@ -82,6 +82,12 @@ var LogMaster = {
 	self: this,
 	log: {},
 	entriesTable: null,
+	levelMapping: {
+		debug: "default",
+		info: "info",
+		warn: "warning",
+		error: "important"
+	},
 	populateDataTable: function(data) {
 		var self = this;
 
@@ -92,7 +98,12 @@ var LogMaster = {
 			aaData: data,
 			aaSorting: [],
 			aoColumns: [
-		        { mData: "level" },
+		        { 
+		        	mData: "level",
+		        	fnRender: function ( o, val ) {		        		
+		        		return '<span class="badge badge-'+self.levelMapping[val.toLowerCase()]+' level-badge">' + val + '</span>';        				
+        			}
+		    	},
 		        { mData: "class" },
 		        { 
 		        	mData: "shortmessage",
@@ -125,7 +136,7 @@ var LogMaster = {
 
         					return '<a href="#" class="badge badge-info timestamp-badge" title="Timestamps" rel="popover" data-content="'+popoverContent+'"><i class="icon-white icon-time"></i> ' + val + '</a>'; 
         				} else {
-        					return '<span class="badge">' + val + '</span>';
+        					return '<span class="badge badge-info timestamp-badge">' + val + '</span>';
         				}        				
         			}
 		        }
