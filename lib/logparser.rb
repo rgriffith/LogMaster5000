@@ -10,7 +10,8 @@ module LogParser
 	@logger.level = :debug
 =end
 	@@defaults = {
-		:threads => 40,
+		:max_threads => 40,
+		:max_chunk_size => 2500,
 		:thread_lib => "em_synchrony"
 	}
 
@@ -22,14 +23,21 @@ module LogParser
 	}
 	
 	@lines = Array.new
+	@lines_size = 0
 	@entries = {}
 
 	class << self
 		def parse_log(lines, opts={})
-			if opts[:threads]
-				threads = opts[:threads]
+			if opts[:max_threads]
+				max_threads = opts[:max_threads]
 			else
-				threads = @@defaults[:threads]
+				max_threads = @@defaults[:max_threads]
+			end
+
+			if opts[:max_chunk_size]
+				max_chunk_size = opts[:max_chunk_size]
+			else
+				max_chunk_size = @@defaults[:max_chunk_size]
 			end
 
 			if opts[:thread_lib]
@@ -43,15 +51,22 @@ module LogParser
 
 			# Grab the lines in the file.
 			@lines = lines
+			@lines_size = @lines.size
 
 			# Make sure we have some data to parse.
-			if (@lines.size < 1) || (@lines.size == 1 && @lines[0].strip.empty?)
+			if (@lines_size < 1) || (@lines_size == 1 && @lines[0].strip.empty?)
 				return { :line_total => 0, :entries => [] }
+			end
+
+			# Determine how many threads we should use.
+			threads = (@lines_size / max_chunk_size).ceil
+			if (threads > max_threads)
+				threads = max_threads
 			end
 
 			# Break the lines into an array of chunks to iterate over to find
 			# points where entries are found.
-			chunk_size = (@lines.size / threads).ceil
+			chunk_size = (@lines_size / threads).ceil
 
 			if chunk_size > threads
 
@@ -83,7 +98,7 @@ module LogParser
 							if index < points.size-1
 								chunk = @lines[point..points.at(index+1)-1]
 							else
-								chunk = @lines[point..@lines.size()]
+								chunk = @lines[point..@lines_size]
 							end
 
 							parse_chunk(chunk)
@@ -98,7 +113,7 @@ module LogParser
 						if index < points.size-1
 							chunk = @lines[point..points.at(index+1)-1]
 						else
-							chunk = @lines[point..@lines.size()]
+							chunk = @lines[point..@lines_size]
 						end
 
 						parse_chunk(chunk)
@@ -107,7 +122,7 @@ module LogParser
 					parse_chunk(@lines)
 			end
 
-			return_hash = { :line_total => @lines.size, :entries => @entries.values }
+			return_hash = { :line_total => @lines_size, :entries => @entries.values }
 
 			return return_hash
 		end
@@ -116,7 +131,7 @@ module LogParser
 			current_line = startPoint
 			endPoint = startPoint+chunk_size
 
-			if endPoint < @lines.size
+			if endPoint < @lines_size
 				@lines[startPoint..endPoint].each do |line| 
 					current_line += 1
 					if line =~ @@entry_regex[:log][:entry]
