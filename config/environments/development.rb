@@ -34,4 +34,7 @@ Logmaster5000::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  # Get rid of Rack::Lock so we don't kill our concurrency
+  config.threadsafe!
 end

@@ -34,6 +34,9 @@ Logmaster5000::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Get rid of Rack::Lock so we don't kill our concurrency
+  config.threadsafe!
 end
 
 OmniAuth.config.test_mode = true
