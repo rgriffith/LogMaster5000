@@ -22,7 +22,7 @@
 				</td>
 				<td><%= number_to_human_size(log.logfile.size) %></td>
 				<td>
-					<%= link_to raw('<i class="icon-pencil"></i>'), edit_log_path(log), :title => 'Edit log' %>
+					<%= link_to raw('<i class="icon-pencil"></i>'), edit_log_path(log), :remote => true, :title => 'Edit log' %>
 					<%= link_to raw('<i class="icon-trash"></i>'), log, :method => 'delete', :confirm => 'Are you sure you want to delete this log? This cannot be undone.', :title => 'Delete log' %>
 				</td>
 			</tr>
