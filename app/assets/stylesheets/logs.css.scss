@@ -12,6 +12,11 @@
 	text-align: left;
 }
 
+.table-striped tbody tr:nth-child(odd) td, 
+.table-striped tbody tr:nth-child(odd) th {
+	background-color: #f2f2f2;
+}
+
 @media (min-width:980px){
 	body {
 		padding: 60px 0;
