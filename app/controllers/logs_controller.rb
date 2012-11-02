@@ -48,6 +48,10 @@ class LogsController < ApplicationController
 		}
 		@entries[:json_hash] = Yajl::Parser.new.parse(@entries[:data])
 
+		if @entries[:json_hash]["type"].nil?
+			@entries[:json_hash]["type"] = ""
+		end
+
 		if @entries[:json_hash]["line_total"] == 0
 			redirect_to :back, :notice => {:type => "error", :message => "It looks like the file that was specified was empty. Please choose a file below or upload a new one."}
 		elsif @log.logfile.size.nil?

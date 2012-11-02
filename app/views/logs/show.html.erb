@@ -10,7 +10,15 @@
 
 <div id="output">
 	<div class="control-group">
-    	<div class="controls">
+    	<div class="controls">			
+		<% if @entries[:json_hash]['type'].match(/catalina/i) %>
+			<label class="checkbox inline">
+				<input class="level-filter" type="checkbox" checked="checked" name="level[]" id="level1" value="SEVERE"> SEVERE
+			</label>
+			<label class="checkbox inline">
+				<input class="level-filter" type="checkbox" name="level[]" id="level3" value="INFO"> INFO
+			</label>
+		<% else %>
 			<label class="checkbox inline">
 				<input class="level-filter" type="checkbox" checked="checked" name="level[]" id="level1" value="ERROR"> ERROR
 			</label>
@@ -23,6 +31,7 @@
 			<label class="checkbox inline">
 				<input class="level-filter" type="checkbox" name="level[]" id="level3" value="INFO"> INFO
 			</label>
+		<% end %>
 		</div>
 	</div>
 	<table id="entries" class="table table-striped table-bordered table-condensed">
@@ -51,6 +60,8 @@
 </div>
 <div id="log-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">
+		<dt>Type</dt>
+		<dd><%= @entries[:json_hash]["type"] %></dd>
 		<dt>Size</dt>
 		<dd><%= number_to_human_size(@log.logfile.size) %></dd>
 		<dt>Lines</dt>
@@ -86,7 +97,8 @@ var LogMaster = {
 		debug: "default",
 		info: "info",
 		warn: "warning",
-		error: "important"
+		error: "important",
+		severe: "important"
 	},
 	populateDataTable: function(data) {
 		var self = this;
@@ -111,7 +123,7 @@ var LogMaster = {
 		        	sType: "html",
 		        	fnRender: function ( o, val ) {
 		        		if (o.aData.trace !== "") {
-        					return '<a href="#" title="View Stack Trace" data-rel="' + o.aData.checksum + '"><i class="icon-tasks"></i></a> <span class="entry-message">' + val + '</span><div style="display:none"><pre>' + o.aData.message + "\r\r" + o.aData.trace + '</pre></div>'; 
+        					return '<a href="#" title="View Stack Trace" data-rel="' + o.aData.checksum + '"><i class="icon-tasks"></i></a> <span class="entry-message">' + val + '</span><div style="display:none"><pre>' + o.aData.trace + '</pre></div>'; 
         				} else {
         					return '<span class="entry-message">' + val + '</span>';
         				}        				
@@ -145,7 +157,7 @@ var LogMaster = {
 		    	// Add the popovers.
 				$("a[rel=popover]").popover({placement: "left"});
 		    }
-		}).fnFilter("ERROR", 0);
+		}).fnFilter("<%= @entries[:json_hash]['type'].match(/catalina/i) ? 'SEVERE' : 'ERROR'%>", 0);
 	},
 	filterDataTable: function() {
 		var self = this,
