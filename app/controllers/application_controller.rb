@@ -42,7 +42,6 @@ class ApplicationController < ActionController::Base
 			# Loop through each member and try to match their public email.
 			members.each { |member| 
 				c = Curl::Easy.perform(member["url"])
-
 				user = Yajl::Parser.parse(c.body_str)
 				return true if user["email"] == username
 			}
