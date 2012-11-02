@@ -32,7 +32,22 @@ class ApplicationController < ActionController::Base
 			c.perform
 
 			members = Yajl::Parser.parse(c.body_str)			
-			members.map { |member| member["login"] }.include?(username)
+
+			# Test for existence of username first.
+			if members.map { |member| member["login"] }.include?(username)
+				return true			
+			end
+
+			# If we did not find the username, perhaps an email was supplied.
+			# Loop through each member and try to match their public email.
+			members.each { |member| 
+				c = Curl::Easy.perform(member["url"])
+
+				user = Yajl::Parser.parse(c.body_str)
+				return true if user["email"] == username
+			}
+
+			return false
 		end
 
 	    def user_signed_in?
