@@ -16,8 +16,8 @@ module LogParser
 					@lines = []
 					@entries = {}
 					@regex = {
-						:timestamp => /^(\w{3} \d{1,2}, \d{4} \d{1,2}:\d{2}:\d{2} AM|PM)/,
-						:entry => /^(\w{3} \d{1,2}, \d{4} \d{1,2}:\d{2}:\d{2} AM|PM) ([^\s]+) ([^\r]+)/,
+						:timestamp => /^(\w{3} \d{1,2}, \d{4} \d{1,2}:\d{2}:\d{2} [A|P]M)/,
+						:entry => /^(\w{3} \d{1,2}, \d{4} \d{1,2}:\d{2}:\d{2} [A|P]M) ([^\s]+) ([^\r]+)/,
 						:message => /([^:\s]+): ([^\r]+)/
 					}
 				end
