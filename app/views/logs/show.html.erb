@@ -265,9 +265,9 @@ $(document).ready(function(){
 	
 	$('#messageModal').on('show', closeActivePopover);
 
-	$('.modal-toggler').on('click', function() {
+	$('.modal-toggler').on('click', function(e) {
+		e.preventDefault();
 		closeActivePopover();
-		return false;
 	});
 });
 
