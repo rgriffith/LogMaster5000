@@ -5,6 +5,7 @@ Utility to parse Cascade Server log files for entries and stack traces. Generate
 * Github authentication
 * Log labels
 * Dropbox scanning
+* Log entry resources
 
 = Technologies Used
 
