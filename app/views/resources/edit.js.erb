@@ -1,0 +1,8 @@
+var inlineResourceFormModal = $('<div class="modal hide" id="inlineResourceFormModal"></div>');
+inlineResourceFormModal.html("<%= escape_javascript(render 'form') %>");
+
+$(".modal-header", inlineResourceFormModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
+
+inlineResourceFormModal.modal('show');
+
+$('#resource_name', inlineResourceFormModal).focus();

@@ -1,0 +1,7 @@
+var inlineLogResourcesModal = $('<div class="modal hide" id="inlineLogResourcesModal"></div>');
+inlineLogResourcesModal.html("<%= escape_javascript(render :partial => 'logs/resources') %>");
+
+$(".modal-header", inlineLogResourcesModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
+$(".modal-body", inlineLogResourcesModal).after('<div class="modal-footer"><a href="<%= log_path(@log) %>" class="btn btn-primary pull-left">View log</a><a href="<%= resources_log_path(@log) %>" class="btn pull-left"><i class="icon icon-share"></i> Resources permalink</a><a href="<%= log_path(@log) %>" class="btn pull-left" data-dismiss="modal">Close</a></div>');
+
+inlineLogResourcesModal.modal('show');

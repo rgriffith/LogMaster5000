@@ -1,0 +1,15 @@
+<div class="page-header">	
+	<div class="btn-group pull-right span3">
+		<%= link_to raw('<i class="icon-pencil"></i> edit resource'), edit_resource_path(@resource), :remote => true, :class => "modal-toggler btn btn-small" %>
+  	</div>
+  	<h1>Resource Details</h1> 	
+</div>
+
+<dl class="dl-horizontal left-align">
+	<dt>Name</dt>
+	<dd><%= @resource.name %></dd>
+	<dt>Regex</dt>
+	<dd><%= @resource.regex %></dd>
+	<dt>URL</dt>
+	<dd><%= @resource.url %></dd>
+</dl>

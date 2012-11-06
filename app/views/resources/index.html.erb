@@ -1,0 +1,36 @@
+<div class="page-header">	
+  	<div class="btn-group pull-right span3">
+  		<%= link_to 'add new resource', new_resource_path, :remote => true, :title => 'Add new resource', :class => "resource-modal-toggler btn btn-primary btn-small" %>
+  	</div>
+  	<h1>Available Resources</h1> 
+</div>	
+
+<div class="row">
+	<div class="span12">
+		<table class="table table-striped table-hover">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+			<% if @resources.size < 1 %>
+				<tr>
+					<td colspan="2">There are currently no resources to list. Feel free to <%= link_to 'create one', new_resource_path, :remote => true, :title => 'Add new resource' %>.</td>
+				</tr>
+			<% else %>
+				<% @resources.each do |resource| %>
+					<tr id="resource_<%= resource.id %>">
+						<td><%= link_to resource.name, resource_path(resource) %></td>
+						<td>
+							<%= link_to raw('<i class="icon-pencil"></i>'), edit_resource_path(resource), :remote => true, :title => 'Edit resource', :class => "resource-modal-toggler" %>
+							<%= link_to raw('<i class="icon-trash"></i>'), resource, :method => 'delete', :confirm => 'Are you sure you want to delete this resource? This cannot be undone.', :title => 'Delete resource' %>
+						</td>
+					</tr>
+				<% end %>
+			<% end %>
+			</tbody>
+		</table>
+	</div>
+</div>

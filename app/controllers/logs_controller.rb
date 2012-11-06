@@ -1,13 +1,11 @@
+require 'yajl'
+
 class LogsController < ApplicationController
 	before_filter :authenticate_user!
 
 	def index
 		@log = Log.new
 		@logs = Log.all		
-	end
-
-	def new
-		@log = Log.new
 	end
 
 	def create		
@@ -37,10 +35,40 @@ class LogsController < ApplicationController
 		end		
 	end
 
-	def show
-		require 'logparser'
-		require 'yajl'
+	def destroy
+		Log.destroy params[:id]
+		redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been deleted.'}
+	end
 
+	def download
+		require 'mime/types'
+		@log = Log.find params[:id]
+		filename = @log.logfile.file.filename
+		send_data @log.logfile.read, :type => MIME::Types.type_for(filename), :filename => File.basename(filename)
+	end
+
+	def edit
+		@log = Log.find params[:id]
+	end
+
+	def new
+		@log = Log.new
+	end
+
+	def resources
+		@log = Log.find params[:id]
+		@entries = Yajl::Parser.new.parse(@log.entriesjson.read)
+
+		@resource_matches = _find_resource_matches(@entries["entries"])
+
+		respond_to do |format|
+			format.html
+			format.js
+			format.json { render :json => @matches }
+	  end
+	end
+
+	def show
 		@log = Log.find params[:id]
 
 		@entries = {
@@ -58,14 +86,12 @@ class LogsController < ApplicationController
 			redirect_to :back, :notice => {:type => "error", :message => "It looks like the file that was specified does not exist. Please choose a file below or upload a new one."}
 		end
 
+		@resource_matches = _find_resource_matches(@entries[:json_hash]["entries"])
+
 		respond_to do |format|
 			format.html
 			format.json { render :json => @entries[:data] }
-	    end
-	end
-
-	def edit
-		@log = Log.find params[:id]
+	  end
 	end
 
 	def update
@@ -103,15 +129,25 @@ class LogsController < ApplicationController
 		end	
 	end
 
-	def destroy
-		Log.destroy params[:id]
-		redirect_to :back, :notice => {:type=> 'success', :message=>'Log has been deleted.'}
-	end
+	def _find_resource_matches(log_entries)
+		resource_matches = {}
 
-	def download
-		require 'mime/types'
-		@log = Log.find params[:id]
-		filename = @log.logfile.file.filename
-		send_data @log.logfile.read, :type => MIME::Types.type_for(filename), :filename => File.basename(filename)
+		regexes = Resource.all.collect{|resource| {
+			:resource => resource,
+			:regex => Regexp.new(resource.regex)
+		}}
+
+		## Loop over each entry to see if we have a resource for it.
+		log_entries.each do |entry|
+			regexes.each do |regex|
+					next unless regex[:regex] =~ entry["entrycontent"]
+					if resource_matches.has_key?(regex[:resource].id)
+						resource_matches[regex[:resource].id][:hits] += 1
+					else
+						resource_matches[regex[:resource].id] = {:resource => regex[:resource], :hits => entry["hits"]}
+					end
+			end
+		end
+		resource_matches
 	end
 end

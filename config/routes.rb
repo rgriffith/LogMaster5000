@@ -18,8 +18,11 @@ Logmaster5000::Application.routes.draw do
   resources :logs do
     member do
       get :download
+      get :resources
     end
   end
+
+  resources :resources
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

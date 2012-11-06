@@ -1,9 +1,11 @@
-<div class="page-header">	
-  	<div class="btn-group pull-right span3">
-  		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
-  		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
-  		<%= link_to raw('<i class="icon-pencil"></i> edit log'), edit_log_path(@log), :remote => true, :title => 'Edit log', :class => "modal-toggler btn btn-small" %>
-  	</div>
+<div class="btn-group pull-right span4">
+		<a href="#" id="log-popover-toggler" class="btn btn-small" title="Log Information"><i class="icon-info-sign"></i> log info</a>
+		<a href="#" id="cache-popover-toggler" class="btn btn-small" title="Cache Information"><i class="icon-hdd"></i> cache info</a>
+		<%= link_to raw('<i class="icon-wrench"></i> resources'), resources_log_path(@log), :title => 'View resources', :class => "modal-toggler btn btn-small", :id => "resources-modal-toggler" %>
+		<%= link_to raw('<i class="icon-pencil"></i> edit'), edit_log_path(@log), :remote => true, :title => 'Edit log', :class => "modal-toggler btn btn-small" %>
+	</div>
+
+<div class="page-header">	  	
   	<h1>Log Details <small><%= @log.logfile.file.filename %></small></h1> 	
   	<%= render :partial => 'logs/loglabels', :locals => { :labels => @log.labels } %>
 </div>
@@ -48,16 +50,25 @@
 	</table>
 </div>
 
-<div class="modal hide" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal hide" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="TraceModal" aria-hidden="true">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="myModalLabel">Stack Trace</h3>
+		<h3 id="TraceModal">Stack Trace</h3>
 	</div>
 	<div class="modal-body"></div>
 	<div class="modal-footer">
 		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 	</div>
 </div>
+
+<div class="modal hide" id="inlineLogResourcesModal">
+	<%= render 'resources' %>
+	<div class="modal-footer">
+		<a href="<%= resources_log_path(@log) %>" class="btn pull-left"><i class="icon icon-share"></i> Resources permalink</a>
+		<a href="<%= log_path(@log) %>" class="btn pull-left" data-dismiss="modal">Close</a>
+	</div>
+</div>
+
 <div id="log-popover-content" class="hide">
 	<dl class="dl-horizontal left-align">
 		<dt>Type</dt>
@@ -119,7 +130,7 @@ var LogMaster = {
 		        { mData: "class" },
 		        { 
 		        	mData: "shortmessage",
-		        	sClass: "trace-toggle" ,
+		        	sClass: "trace-toggle modal-toggler" ,
 		        	sType: "html",
 		        	fnRender: function ( o, val ) {
 		        		if (o.aData.trace !== "") {
@@ -177,18 +188,23 @@ var LogMaster = {
 
 $(document).ready(function(){
 	/* Create an array with the values of all the badge values in the hits column */
-	$.fn.dataTableExt.afnSortData['hit-count'] = function  ( oSettings, iColumn )
-	{
+	$.fn.dataTableExt.afnSortData['hit-count'] = function(oSettings, iColumn) {
 		var aData = [];
-		$( 'td:eq('+iColumn+') .badge', oSettings.oApi._fnGetTrNodes(oSettings) ).each( function () {
-			aData.push( this.text );
-		} );
+		$('td:eq('+iColumn+') .badge', oSettings.oApi._fnGetTrNodes(oSettings)).each(function() {
+			aData.push(this.text);
+		});
 		return aData;
 	}
 
 	var messageModal = $("#messageModal").modal({show:false}),
 		activeLog = null,
-		activePopover = null;
+		activePopover = null
+		closeActivePopover = function(){
+			// Hide any active popovers.
+	    if (activePopover !== null) {
+				activePopover.popover('hide');
+			}
+		};
 
 	LogMaster.entriesTable = $('#entries');
 	LogMaster.entriesTable.dataTable({
@@ -204,16 +220,10 @@ $(document).ready(function(){
 	});
 
 	$('td.trace-toggle:has(a)', $('#entries')).live('click', function () {
-    	$('.modal-body', messageModal).html($('div', $(this)).html());
-
-    	// Hide any active popovers.
-    	if (activePopover !== null) {
-			activePopover.popover('hide');
-		}
-
+    $('.modal-body', messageModal).html($('div', $(this)).html());
 		messageModal.modal('show');
 		return false;   
-    });
+  });
 
 	// Remove clicking from the popovers
 	$("a[rel=popover]").live("click", function(e) {
@@ -240,11 +250,24 @@ $(document).ready(function(){
 		// Clear open popover.
 		// Only necessary if the current differs from active.
 		if (activePopover !== null && elementId !== activePopover.attr('id')) {
-			activePopover.popover('hide');
+			closeActivePopover()
 		}
 		
 		// Update the active popover.
 		activePopover = element;
+	});
+
+	$('#resources-modal-toggler').click(function(){
+		var inlineLogResourcesModal = $('#inlineLogResourcesModal');
+		$(".modal-header", inlineLogResourcesModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
+		inlineLogResourcesModal.modal('show');
+	});
+	
+	$('#messageModal').on('show', closeActivePopover);
+
+	$('.modal-toggler').on('click', function() {
+		closeActivePopover();
+		return false;
 	});
 });
 
