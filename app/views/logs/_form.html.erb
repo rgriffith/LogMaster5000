@@ -1,7 +1,7 @@
 <%= form_for @log, :html => { :style => "margin-bottom:0px" } do |f| %>    
     <div class="modal-header">
         <% if @log.id %>            
-            <h3>Update Log <small><%= @log.logfile.url %></h3>
+            <h3>Update Log <small><%= @log.logfile.file.filename %></h3>
         <% else %>
             <h3>Add Log</h3>
         <% end %>        
