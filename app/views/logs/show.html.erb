@@ -121,59 +121,59 @@ var LogMaster = {
 			aaData: data,
 			aaSorting: [],
 			aoColumns: [
-		        { 
-		        	mData: "level",
-		        	fnRender: function ( o, val ) {		        		
-		        		return '<span class="badge badge-'+self.levelMapping[val.toLowerCase()]+' level-badge">' + val + '</span>';        				
+				{ 
+					mData: "level",
+					fnRender: function ( o, val ) {		        		
+						return '<span class="badge badge-'+self.levelMapping[val.toLowerCase()]+' level-badge">' + val + '</span>';
+					}
+				},
+		    { mData: "class" },
+		    { 
+        	mData: "shortmessage",
+        	sClass: "trace-toggle modal-toggler" ,
+        	sType: "html",
+        	fnRender: function ( o, val ) {
+        		if (o.aData.trace !== "") {
+    					return '<a href="#" title="View Stack Trace" data-rel="' + o.aData.checksum + '"><i class="icon-tasks"></i></a> <span class="entry-message">' + val + '</span><div style="display:none"><pre>' + o.aData.trace + '</pre></div>'; 
+    				} else {
+    					return '<span class="entry-message">' + val + '</span>';
+    				}        				
+    			}
+    		},
+        { 
+        	mData: "hits",
+        	sClass: "popover-toggle" ,
+        	sSortDataType: "hit-count",
+        	sType: "numeric",
+        	fnRender: function ( o, val ) {
+        		if (o.aData.timestamp.length > 0) {
+        			var popoverContent = "",
+        				limit = o.aData.timestamp.length < 10 ? o.aData.timestamp.length : 10;
+        			for (var i = 0; i < limit; i++) {
+        				popoverContent += (o.aData.timestamp[i] + "<br />");
         			}
-		    	},
-		        { mData: "class" },
-		        { 
-		        	mData: "shortmessage",
-		        	sClass: "trace-toggle modal-toggler" ,
-		        	sType: "html",
-		        	fnRender: function ( o, val ) {
-		        		if (o.aData.trace !== "") {
-        					return '<a href="#" title="View Stack Trace" data-rel="' + o.aData.checksum + '"><i class="icon-tasks"></i></a> <span class="entry-message">' + val + '</span><div style="display:none"><pre>' + o.aData.trace + '</pre></div>'; 
-        				} else {
-        					return '<span class="entry-message">' + val + '</span>';
-        				}        				
-        			}
-        		},
-		        { 
-		        	mData: "hits",
-		        	sClass: "popover-toggle" ,
-		        	sSortDataType: "hit-count",
-		        	sType: "numeric",
-		        	fnRender: function ( o, val ) {
-		        		if (o.aData.timestamp.length > 0) {
-		        			var popoverContent = "",
-		        				limit = o.aData.timestamp.length < 10 ? o.aData.timestamp.length : 10;
-		        			for (var i = 0; i < limit; i++) {
-		        				popoverContent += (o.aData.timestamp[i] + "<br />");
-		        			}
 
-		        			if (o.aData.timestamp.length > limit) {
-		        				popoverContent += "...";	
-		        			}
-
-        					return '<a href="#" class="badge badge-info timestamp-badge" title="Timestamps" rel="popover" data-content="'+popoverContent+'"><i class="icon-white icon-time"></i> ' + val + '</a>'; 
-        				} else {
-        					return '<span class="badge badge-info timestamp-badge">' + val + '</span>';
-        				}        				
+        			if (o.aData.timestamp.length > limit) {
+        				popoverContent += "...";	
         			}
-		        }
-		    ],
-		    fnDrawCallback: function(o) {
-		    	// Add the popovers.
+
+    					return '<a href="#" class="badge badge-info timestamp-badge" title="Timestamps" rel="popover" data-content="'+popoverContent+'"><i class="icon-white icon-time"></i> ' + val + '</a>'; 
+    				} else {
+    					return '<span class="badge badge-info timestamp-badge">' + val + '</span>';
+    				}        				
+    			}
+        }
+		  ],
+	    fnDrawCallback: function(o) {
+	    	// Add the popovers.
 				$("a[rel=popover]").popover({placement: "left"});
-		    }
+	    }
 		}).fnFilter("<%= @entries[:json_hash]['type'].match(/catalina/i) ? 'SEVERE' : 'ERROR'%>", 0);
 	},
 	filterDataTable: function() {
 		var self = this,
-			regex = '',
-			filters = $('.level-filter:checked');
+				regex = '',
+				filters = $('.level-filter:checked');
 
 		filters.each(function(i){
 			regex += $(this).val() + '|';
@@ -197,35 +197,38 @@ $(document).ready(function(){
 	}
 
 	var messageModal = $("#messageModal").modal({show:false}),
-		activeLog = null,
-		activePopover = null
-		closeActivePopover = function(){
-			// Hide any active popovers.
-	    if (activePopover !== null) {
-				activePopover.popover('hide');
-			}
-		};
+			inlineLogResourcesModal = $('#inlineLogResourcesModal').modal({show:false}),
+			activePopover = null,
+			closeActivePopover = function(){
+				// Hide any active popovers.
+		    if (activePopover !== null) {
+					activePopover.popover('hide');
+				}
+			};
+
+	// Add a close button to the resources modal.
+	$(".modal-header", inlineLogResourcesModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
 
 	LogMaster.entriesTable = $('#entries');
-	LogMaster.entriesTable.dataTable({
-		bSort: false
-	});
+	LogMaster.entriesTable.dataTable({ bSort: false });
 
 	LogMaster.log = <%= @entries[:data].force_encoding("UTF-8").html_safe %>;
 
 	LogMaster.populateDataTable(LogMaster.log.entries);
 
+	// Add a filter event to the entry level checkboxes.
 	$('.level-filter').change(function(){
 		LogMaster.filterDataTable();
 	});
 
+	// Add a click event for the entry trace modal.
 	$('td.trace-toggle:has(a)', $('#entries')).live('click', function () {
     $('.modal-body', messageModal).html($('div', $(this)).html());
 		messageModal.modal('show');
 		return false;   
   });
 
-	// Remove clicking from the popovers
+	// Remove clicking from the popover links
 	$("a[rel=popover]").live("click", function(e) {
 		e.preventDefault()
 	});
@@ -257,14 +260,12 @@ $(document).ready(function(){
 		activePopover = element;
 	});
 
+	// Create a click event for the resources modal.
 	$('#resources-modal-toggler').click(function(){
-		var inlineLogResourcesModal = $('#inlineLogResourcesModal');
-		$(".modal-header", inlineLogResourcesModal).prepend('<button type="button" class="close" data-dismiss="modal">×</button>');
 		inlineLogResourcesModal.modal('show');
 	});
-	
-	$('#messageModal').on('show', closeActivePopover);
 
+	// Hide the active popover if a modal's link is clicked.
 	$('.modal-toggler').on('click', function(e) {
 		e.preventDefault();
 		closeActivePopover();
