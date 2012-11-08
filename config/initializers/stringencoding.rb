@@ -1,6 +1,7 @@
 require 'zlib'
 require 'digest/md5'
 require 'base64'
+require "cgi"
 
 class String
 	def str_to_crc32
@@ -22,5 +23,9 @@ class String
 	def json_escape
 		result = self.to_s.gsub('/', '\/')
 		self.html_safe? ? result.html_safe : result
+	end
+
+	def htmlentities
+		CGI::escapeHTML(self)
 	end
 end

@@ -46,7 +46,7 @@ module LogParser
 					if timestamp.nil?
 						# Make sure we're not already writing a stack trace in another process...
 						if tempEntry.empty? == false && tempEntry[:traceWriteLock]
-							tempEntry[:trace] += line
+							tempEntry[:trace] += line.htmlentities
 							tempEntry[:lineCount] += 1
 						end
 					else
@@ -68,7 +68,7 @@ module LogParser
 						if $4.nil?
 							message = ""
 						else
-							message = $4.gsub(/\n|\r/,'')
+							message = $4.gsub(/\n|\r/,'').htmlentities
 						end
 
 						# Call custom str_to_{hash} method
@@ -94,7 +94,7 @@ module LogParser
 						else
 							# Record the entry.	
 							tempEntry = {
-								:entrycontent => currentLineText,
+								:entrycontent => currentLineText.htmlentities,
 								:checksum => checksum,
 								:timestamp => [timestamp],
 								:level => level,
