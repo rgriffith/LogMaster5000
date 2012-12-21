@@ -5,7 +5,7 @@ module LogParser
 		class Cascade < Base
 			attr_accessor :log
 
-			def initialize			
+			def initialize
 				@log = LogParser::Parser::Cascade::Log.new
 			end
 
@@ -17,7 +17,7 @@ module LogParser
 					@entries = {}
 					@regex = {
 						:timestamp => /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3,}/,
-						:entry => /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3,}) (\w{1,})\s+\[([^\[\]]+||\[\/\])\] ([^\r]+)/
+						:entry => /^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},\d{3,}) (\w{1,})\s+\[(.*)\] ([^\r]+)/
 					}
 				end
 			end
@@ -29,7 +29,7 @@ module LogParser
 				linesToSkip = 0
 				currentLineText = ""
 
-				chunk.each_with_index do |line, index| 
+				chunk.each_with_index do |line, index|
 					# Skip the line if it's empty.
 					next if line.strip.empty?
 
@@ -37,7 +37,7 @@ module LogParser
 					if linesToSkip > 0
 						linesToSkip -= 1
 						next
-					end		
+					end
 
 					# Are we on an entry line, or a stack trace?
 					timestamp = line.match(@log.regex[:timestamp])
@@ -54,7 +54,7 @@ module LogParser
 						currentLineText = line.slice(timestamp[0].length, line.length)
 						if tempEntry.empty? == false && tempEntry[:entrycontent] == currentLineText
 							tempEntry[:timestamp] << timestamp[0]
-							tempEntry[:hits] += 1			
+							tempEntry[:hits] += 1
 							next
 						end
 
@@ -75,10 +75,10 @@ module LogParser
 						checksum = message.str_to_crc32
 						#checksum = message.str_to_md5
 
-						# Do we have an existing entry?					
+						# Do we have an existing entry?
 						if @log.entries.has_key?(checksum)
 							if (tempEntry = @log.entries[checksum]) && (tempEntry != nil)
-								# Set the trace write lock to false. Used for other processes that 
+								# Set the trace write lock to false. Used for other processes that
 								# may have encountered a match (avoids appending duplicate traces).
 								if tempEntry[:traceWriteLock] == true
 									tempEntry[:traceWriteLock] = false
@@ -92,7 +92,7 @@ module LogParser
 								end
 							end
 						else
-							# Record the entry.	
+							# Record the entry.
 							tempEntry = {
 								:entrycontent => currentLineText.htmlentities,
 								:checksum => checksum,
