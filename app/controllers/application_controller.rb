@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
 
 			c = Curl::Easy.new("https://api.github.com/orgs/"+ENV['GITHUB_ORG']+"/members")
 			c.http_auth_types = :basic
+			c.headers["User-Agent"] = "LogMaster5000"
 			c.username = ENV['GITHUB_APIUSER']
 			c.password = ENV['GITHUB_APIPASS']
 			c.perform
@@ -41,7 +42,9 @@ class ApplicationController < ActionController::Base
 			# If we did not find the username, perhaps an email was supplied.
 			# Loop through each member and try to match their public email.
 			members.each { |member| 
-				c = Curl::Easy.perform(member["url"])
+				c = Curl::Easy.new(member["url"])
+				c.headers["User-Agent"] = "LogMaster5000"
+				c.perform
 				user = Yajl::Parser.parse(c.body_str)
 				return true if user["email"] == username
 			}
